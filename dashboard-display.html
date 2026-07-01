@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TROJKA ZA HRAM - Anzeige</title>
+    <title>Basketball 3er Contest - Kontrolle</title>
     <style>
         * {
             margin: 0;
@@ -12,196 +12,461 @@
         }
         
         body {
-            font-family: 'Arial', sans-serif;
-            background: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f0f;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            color: #ffffff;
         }
         
         .container {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
             text-align: center;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            max-width: 550px;
+            border: 1px solid #333;
         }
         
-        .logo {
-            width: 850px;
-            height: 850px;
-            object-fit: contain;
-            position: absolute;
-            top: -170px;
+        h1 {
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            color: #999;
+            margin-bottom: 40px;
+            font-size: 14px;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .time-display {
-            font-size: 375px;
-            font-weight: bold;
-            color: #1dd1a1;
-            text-shadow: 0 0 30px rgba(29, 209, 161, 0.8),
-                         0 0 60px rgba(29, 209, 161, 0.5);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 20px;
-            line-height: 1;
-            position: absolute;
-            top: calc(50% + 100px);
-            left: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-        }
-        
-        .time-display.stopped {
-            color: #1dd1a1;
-            text-shadow: 0 0 30px rgba(29, 209, 161, 0.8),
-                         0 0 60px rgba(29, 209, 161, 0.5);
-        }
-        
-        .time-display.running {
+            font-size: 80px;
+            font-weight: 700;
             color: #ffffff;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
-                         0 0 60px rgba(255, 255, 255, 0.5);
-            animation: pulse 1s infinite;
+            margin: 40px 0;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 8px;
+            background: #252525;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid #333;
+            transition: color 0.3s ease;
         }
         
         .time-display.paused {
             color: #ff9500;
-            text-shadow: 0 0 30px rgba(255, 149, 0, 0.8),
-                         0 0 60px rgba(255, 149, 0, 0.5);
-            animation: pulse-orange 1s infinite;
         }
         
-        .time-display.warning {
-            color: #ef4444;
-            text-shadow: 0 0 30px rgba(239, 68, 68, 0.8),
-                         0 0 60px rgba(239, 68, 68, 0.5);
-            animation: pulse-red 0.5s infinite;
+        .time-settings {
+            background: #252525;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #333;
         }
         
-        .time-display.finished {
-            color: #ef4444;
-            text-shadow: 0 0 30px rgba(239, 68, 68, 0.8),
-                         0 0 60px rgba(239, 68, 68, 0.5);
-            animation: pulse-red-fast 0.3s infinite;
+        .time-settings label {
+            display: block;
+            color: #999;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
-        @keyframes pulse {
-            0%, 100% {
-                text-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
-                             0 0 60px rgba(255, 255, 255, 0.5);
-            }
-            50% {
-                text-shadow: 0 0 50px rgba(255, 255, 255, 1),
-                             0 0 80px rgba(255, 255, 255, 0.7);
-            }
+        .time-inputs {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
         }
         
-        @keyframes pulse-orange {
-            0%, 100% {
-                text-shadow: 0 0 30px rgba(255, 149, 0, 0.8),
-                             0 0 60px rgba(255, 149, 0, 0.5);
-            }
-            50% {
-                text-shadow: 0 0 50px rgba(255, 149, 0, 1),
-                             0 0 80px rgba(255, 149, 0, 0.7);
-            }
+        .time-inputs input {
+            width: 80px;
+            padding: 12px;
+            font-size: 20px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            text-align: center;
+            background: #1a1a1a;
+            color: #ffffff;
+            font-weight: 600;
         }
         
-        @keyframes pulse-red {
-            0%, 100% {
-                text-shadow: 0 0 30px rgba(239, 68, 68, 0.8),
-                             0 0 60px rgba(239, 68, 68, 0.5);
-            }
-            50% {
-                text-shadow: 0 0 50px rgba(239, 68, 68, 1),
-                             0 0 80px rgba(239, 68, 68, 0.7);
-            }
+        .time-inputs input:focus {
+            outline: none;
+            border-color: #666;
+            background: #202020;
         }
         
-        @keyframes pulse-red-fast {
-            0%, 100% {
-                text-shadow: 0 0 50px rgba(239, 68, 68, 1),
-                             0 0 80px rgba(239, 68, 68, 0.7);
-            }
-            50% {
-                text-shadow: 0 0 80px rgba(239, 68, 68, 1),
-                             0 0 120px rgba(239, 68, 68, 1);
-            }
+        .time-inputs span {
+            font-size: 28px;
+            font-weight: 700;
+            color: #666;
+        }
+        
+        .time-settings button {
+            background: #333;
+            color: #ffffff;
+            padding: 12px 30px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .time-settings button:hover {
+            background: #404040;
+            border-color: #555;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin: 35px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        button {
+            padding: 16px 35px;
+            font-size: 14px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .btn-toggle {
+            background: #ffffff;
+            color: #000000;
+        }
+        
+        .btn-toggle:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-toggle:active {
+            background: #d0d0d0;
+            transform: translateY(0);
+        }
+        
+        .btn-reset {
+            background: #666;
+            color: #ffffff;
+        }
+        
+        .btn-reset:hover {
+            background: #777;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(100, 100, 100, 0.3);
+        }
+        
+        .btn-reset:active {
+            background: #555;
+            transform: translateY(0);
+        }
+        
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            background: #252525;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #999;
+            border: 1px solid #333;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .status.running {
+            background: #2a2a2a;
+            color: #ffffff;
+            border-color: #444;
+        }
+        
+        .status.stopped {
+            background: #252525;
+            color: #999;
+            border-color: #333;
+        }
+        
+        .status.paused {
+            background: #2a2a2a;
+            color: #ff9500;
+            border-color: #666;
+        }
+        
+        .keyboard-info {
+            margin-top: 25px;
+            padding: 20px;
+            background: #252525;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.8;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        
+        .keyboard-info strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .open-display {
+            margin-top: 25px;
+            padding: 20px;
+            background: #252525;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #999;
+            border: 1px solid #333;
+        }
+        
+        .open-display p {
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .open-display button {
+            background: #333;
+            color: #ffffff;
+            padding: 12px 25px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .open-display button:hover {
+            background: #404040;
+            border-color: #555;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="Logo.png" alt="TROJKA ZA HRAM" class="logo">
+        <h1>🏀 TROJKA ZA HRAM</h1>
+        <div class="subtitle">Petrovdan 2026</div>
+        
         <div class="time-display" id="timeDisplay">01:00</div>
+        
+        <div class="time-settings">
+            <label>⏱️ Zeit einstellen</label>
+            <div class="time-inputs">
+                <input type="number" id="minutes" min="0" max="59" value="1" placeholder="Min">
+                <span>:</span>
+                <input type="number" id="seconds" min="0" max="59" value="00" placeholder="Sec">
+            </div>
+            <button onclick="setCustomTime()">Zeit setzen</button>
+        </div>
+        
+        <div class="button-group">
+            <button class="btn-toggle" onclick="toggleTimer()">▶ START / ⏸ PAUSE</button>
+            <button class="btn-reset" onclick="resetTimer()">🔄 RESET</button>
+        </div>
+        
+        <div class="status" id="status">
+            ● GESTOPPT
+        </div>
+        
+        <div class="keyboard-info">
+            <strong>⌨️ Tastenkürzel</strong>
+            ENTER = Start/Pause<br>
+            R = Reset
+        </div>
+        
+        <div class="open-display">
+            <p>📺 Öffne das Anzeige-Fenster</p>
+            <button onclick="openDisplay()">Fenster öffnen</button>
+        </div>
     </div>
 
-    <!-- Audio Element für Buzzer Sound -->
-    <audio id="buzzerSound" preload="auto">
-        <source src="buzzer.mp3" type="audio/mpeg">
-    </audio>
-
     <script>
-        const timeDisplay = document.getElementById('timeDisplay');
-        const buzzerSound = document.getElementById('buzzerSound');
-        let buzzerPlayed = false;
+        let timerInterval = null;
+        const INITIAL_TIME = 60; // 60 Sekunden = 1:00
+        
+        // Initialisiere Zeit im localStorage
+        if (!localStorage.getItem('countdownTime')) {
+            localStorage.setItem('countdownTime', INITIAL_TIME);
+            localStorage.setItem('isRunning', 'false');
+        }
+        
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                toggleTimer();
+            } else if (e.key === 'r' || e.key === 'R') {
+                e.preventDefault();
+                resetTimer();
+            }
+        });
+        
+        // Synchronisiere mit anderen Fenstern
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'countdownTime' || e.key === 'isRunning') {
+                updateDisplay();
+            }
+        });
         
         function updateDisplay() {
-            const time = parseInt(localStorage.getItem('countdownTime') || 60);
-            const isRunning = localStorage.getItem('isRunning') === 'true';
+            const time = parseInt(localStorage.getItem('countdownTime') || INITIAL_TIME);
             const minutes = Math.floor(time / 60);
             const seconds = time % 60;
+            const timeDisplayEl = document.getElementById('timeDisplay');
             
-            timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            timeDisplayEl.textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             
-            // Spiele Buzzer Sound 2 Sekunden vor Ende ab (bei 00:02)
-            if (isRunning && time === 2 && !buzzerPlayed) {
-                buzzerSound.currentTime = 0;
-                buzzerSound.play().catch(err => console.log('Sound konnte nicht abgespielt werden:', err));
-                buzzerPlayed = true;
-            }
+            updateStatus();
+            updateTimeDisplayColor();
+        }
+        
+        function updateTimeDisplayColor() {
+            const timeDisplayEl = document.getElementById('timeDisplay');
+            const isRunning = localStorage.getItem('isRunning') === 'true';
             
-            // Setze buzzerPlayed zurück wenn nicht mehr bei 00:02
-            if (time !== 2) {
-                buzzerPlayed = false;
-            }
-            
-            // Update Farbe und Animation basierend auf Status
             if (isRunning) {
-                if (time === 0) {
-                    // Rot stark pulsierend bei 00:00
-                    timeDisplay.className = 'time-display finished';
-                } else if (time <= 15) {
-                    // Rot wenn <= 15 Sekunden
-                    timeDisplay.className = 'time-display warning';
-                } else {
-                    // Weiß wenn läuft und > 15 Sekunden
-                    timeDisplay.className = 'time-display running';
-                }
+                timeDisplayEl.classList.remove('paused');
             } else {
-                // Check ob nicht am Anfang (01:00) oder Ende (00:00)
-                if (time === 60 || time === 0) {
-                    // Grün bei 01:00 oder 00:00
-                    timeDisplay.className = 'time-display stopped';
-                } else {
-                    // Orange wenn pausiert und Zeit läuft
-                    timeDisplay.className = 'time-display paused';
-                }
+                timeDisplayEl.classList.add('paused');
             }
         }
         
-        // Synchronisiere mit localStorage Änderungen
-        window.addEventListener('storage', updateDisplay);
+        function updateStatus() {
+            const isRunning = localStorage.getItem('isRunning') === 'true';
+            const status = document.getElementById('status');
+            if (isRunning) {
+                status.textContent = '● LÄUFT';
+                status.className = 'status running';
+            } else {
+                status.textContent = '● PAUSIERT';
+                status.className = 'status paused';
+            }
+        }
         
-        // Update alle 100ms für flüssige Anzeige
-        setInterval(updateDisplay, 100);
+        function setCustomTime() {
+            const isRunning = localStorage.getItem('isRunning') === 'true';
+            if (isRunning) {
+                alert('Stoppe den Timer zuerst!');
+                return;
+            }
+            
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+            
+            if (minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) {
+                alert('Bitte gültige Werte eingeben (0-59)');
+                return;
+            }
+            
+            const totalSeconds = minutes * 60 + seconds;
+            localStorage.setItem('countdownTime', totalSeconds);
+            updateDisplay();
+        }
         
-        // Initialisiere
+        function toggleTimer() {
+            const isRunning = localStorage.getItem('isRunning') === 'true';
+            
+            if (isRunning) {
+                // Stoppen
+                localStorage.setItem('isRunning', 'false');
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+            } else {
+                // Starten
+                localStorage.setItem('isRunning', 'true');
+                startCountdown();
+            }
+            
+            updateDisplay();
+        }
+        
+        function startCountdown() {
+            if (timerInterval) return;
+            
+            timerInterval = setInterval(() => {
+                let time = parseInt(localStorage.getItem('countdownTime') || INITIAL_TIME);
+                const isRunning = localStorage.getItem('isRunning') === 'true';
+                
+                if (!isRunning) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    return;
+                }
+                
+                if (time > 0) {
+                    time--;
+                    localStorage.setItem('countdownTime', time);
+                    updateDisplay();
+                } else {
+                    // Zeit abgelaufen: stoppe Timer, keine lokale Tonerzeugung
+                    localStorage.setItem('isRunning', 'false');
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    updateDisplay();
+                    // KEIN playSound() mehr hier — Anzeige spielt buzzer.mp3 bei 00:02
+                }
+            }, 1000);
+        }
+        
+        function resetTimer() {
+            localStorage.setItem('countdownTime', INITIAL_TIME);
+            localStorage.setItem('isRunning', 'false');
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            document.getElementById('minutes').value = '1';
+            document.getElementById('seconds').value = '00';
+            updateDisplay();
+        }
+        
+        function openDisplay() {
+            const width = 1400;
+            const height = 800;
+            window.open('dashboard-display.html', 'TimerDisplay', 
+                `width=${width},height=${height},menubar=no,toolbar=no,location=no,status=no`);
+        }
+        
+        // Initialisiere beim Laden
         updateDisplay();
     </script>
 </body>
