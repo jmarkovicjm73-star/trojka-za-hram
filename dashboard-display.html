@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TROJKA ZA HRAM - Anzeige</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 850px;
+            height: 850px;
+            object-fit: contain;
+            position: absolute;
+            top: -170px;
+        }
+        
+        .time-display {
+            font-size: 375px;
+            font-weight: bold;
+            color: #1dd1a1;
+            text-shadow: 0 0 30px rgba(29, 209, 161, 0.8),
+                         0 0 60px rgba(29, 209, 161, 0.5);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 20px;
+            line-height: 1;
+            position: absolute;
+            top: calc(50% + 100px);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        
+        .time-display.stopped {
+            color: #1dd1a1;
+            text-shadow: 0 0 30px rgba(29, 209, 161, 0.8),
+                         0 0 60px rgba(29, 209, 161, 0.5);
+        }
+        
+        .time-display.running {
+            color: #ffffff;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+                         0 0 60px rgba(255, 255, 255, 0.5);
+            animation: pulse 1s infinite;
+        }
+        
+        .time-display.paused {
+            color: #ff9500;
+            text-shadow: 0 0 30px rgba(255, 149, 0, 0.8),
+                         0 0 60px rgba(255, 149, 0, 0.5);
+            animation: pulse-orange 1s infinite;
+        }
+        
+        .time-display.warning {
+            color: #ef4444;
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.8),
+                         0 0 60px rgba(239, 68, 68, 0.5);
+            animation: pulse-red 0.5s infinite;
+        }
+        
+        .time-display.finished {
+            color: #ef4444;
+            text-shadow: 0 0 30px rgba(239, 68, 68, 0.8),
+                         0 0 60px rgba(239, 68, 68, 0.5);
+            animation: pulse-red-fast 0.3s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+                             0 0 60px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 50px rgba(255, 255, 255, 1),
+                             0 0 80px rgba(255, 255, 255, 0.7);
+            }
+        }
+        
+        @keyframes pulse-orange {
+            0%, 100% {
+                text-shadow: 0 0 30px rgba(255, 149, 0, 0.8),
+                             0 0 60px rgba(255, 149, 0, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 50px rgba(255, 149, 0, 1),
+                             0 0 80px rgba(255, 149, 0, 0.7);
+            }
+        }
+        
+        @keyframes pulse-red {
+            0%, 100% {
+                text-shadow: 0 0 30px rgba(239, 68, 68, 0.8),
+                             0 0 60px rgba(239, 68, 68, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 50px rgba(239, 68, 68, 1),
+                             0 0 80px rgba(239, 68, 68, 0.7);
+            }
+        }
+        
+        @keyframes pulse-red-fast {
+            0%, 100% {
+                text-shadow: 0 0 50px rgba(239, 68, 68, 1),
+                             0 0 80px rgba(239, 68, 68, 0.7);
+            }
+            50% {
+                text-shadow: 0 0 80px rgba(239, 68, 68, 1),
+                             0 0 120px rgba(239, 68, 68, 1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="logo.png" alt="TROJKA ZA HRAM" class="logo">
+        <div class="time-display" id="timeDisplay">01:00</div>
+    </div>
+
+    <script>
+        const timeDisplay = document.getElementById('timeDisplay');
+        
+        function updateDisplay() {
+            const time = parseInt(localStorage.getItem('countdownTime') || 60);
+            const isRunning = localStorage.getItem('isRunning') === 'true';
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            
+            timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            // Update Farbe und Animation basierend auf Status
+            if (isRunning) {
+                if (time === 0) {
+                    // Rot stark pulsierend bei 00:00
+                    timeDisplay.className = 'time-display finished';
+                } else if (time <= 15) {
+                    // Rot wenn <= 15 Sekunden
+                    timeDisplay.className = 'time-display warning';
+                } else {
+                    // Weiß wenn läuft und > 15 Sekunden
+                    timeDisplay.className = 'time-display running';
+                }
+            } else {
+                // Check ob nicht am Anfang (01:00) oder Ende (00:00)
+                if (time === 60 || time === 0) {
+                    // Grün bei 01:00 oder 00:00
+                    timeDisplay.className = 'time-display stopped';
+                } else {
+                    // Orange wenn pausiert und Zeit läuft
+                    timeDisplay.className = 'time-display paused';
+                }
+            }
+        }
+        
+        // Synchronisiere mit localStorage Änderungen
+        window.addEventListener('storage', updateDisplay);
+        
+        // Update alle 100ms für flüssige Anzeige
+        setInterval(updateDisplay, 100);
+        
+        // Initialisiere
+        updateDisplay();
+    </script>
+</body>
+</html>
