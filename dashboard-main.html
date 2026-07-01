@@ -437,11 +437,12 @@
                     localStorage.setItem('countdownTime', time);
                     updateDisplay();
                 } else {
+                    // Zeit abgelaufen: stoppe Timer, keine lokale Tonerzeugung
                     localStorage.setItem('isRunning', 'false');
                     clearInterval(timerInterval);
                     timerInterval = null;
                     updateDisplay();
-                    playSound();
+                    // KEIN playSound() mehr hier — Anzeige spielt buzzer.mp3 bei 00:02
                 }
             }, 1000);
         }
@@ -463,24 +464,6 @@
             const height = 800;
             window.open('dashboard-display.html', 'TimerDisplay', 
                 `width=${width},height=${height},menubar=no,toolbar=no,location=no,status=no`);
-        }
-        
-        function playSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
         }
         
         // Initialisiere beim Laden
