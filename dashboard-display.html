@@ -141,8 +141,15 @@
         <div class="time-display" id="timeDisplay">01:00</div>
     </div>
 
+    <!-- Audio Element für Buzzer Sound -->
+    <audio id="buzzerSound" preload="auto">
+        <source src="buzzer.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         const timeDisplay = document.getElementById('timeDisplay');
+        const buzzerSound = document.getElementById('buzzerSound');
+        let buzzerPlayed = false;
         
         function updateDisplay() {
             const time = parseInt(localStorage.getItem('countdownTime') || 60);
@@ -151,6 +158,18 @@
             const seconds = time % 60;
             
             timeDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            // Spiele Buzzer Sound ab wenn Zeit zu Ende ist (00:00) und läuft
+            if (isRunning && time === 0 && !buzzerPlayed) {
+                buzzerSound.currentTime = 0;
+                buzzerSound.play().catch(err => console.log('Sound konnte nicht abgespielt werden:', err));
+                buzzerPlayed = true;
+            }
+            
+            // Setze buzzerPlayed zurück wenn nicht bei 00:00
+            if (time !== 0) {
+                buzzerPlayed = false;
+            }
             
             // Update Farbe und Animation basierend auf Status
             if (isRunning) {
